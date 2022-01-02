@@ -10,6 +10,7 @@ import (
 
 func main() {
 	total := 0
+	ribbonTotal := 0
 	fmt.Println("vim-go")
 	file, err := os.Open("2.input")
 	if err != nil {
@@ -45,6 +46,9 @@ func main() {
 		}
 		sum := 2*intInputs[0]*intInputs[1] + 2*intInputs[0]*intInputs[2] + 2*intInputs[1]*intInputs[2] + smallest*secondSmallest
 		total += sum
+		ribbonSum := 2*(smallest+secondSmallest) + intInputs[0]*intInputs[1]*intInputs[2]
+		ribbonTotal += ribbonSum
 	}
 	fmt.Println("Total: " + strconv.Itoa(total))
+	fmt.Println("Ribbon Total: " + strconv.Itoa(ribbonTotal))
 }
