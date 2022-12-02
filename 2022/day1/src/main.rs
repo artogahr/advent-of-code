@@ -24,7 +24,7 @@ fn main() {
             if is_end_of_input {
                 break;
             } 
-                        if current_number > third_max {
+            if current_number > third_max {
                 if current_number > second_max {
                     if current_number > max_number {
                         third_max = second_max;
@@ -43,7 +43,7 @@ fn main() {
                 }
                 else {
                     third_max = current_number;
-                        // println!("third number became {third_max}");
+                    // println!("third number became {third_max}");
                 }
             }
 
