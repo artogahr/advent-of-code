@@ -14,9 +14,9 @@ fn main() {
         let next_move = values.next().expect("No string for next move");
         match expected_move {
             "A" => match next_move {
-                "X" => current_score = 1 + 3,
-                "Y" => current_score = 2 + 6,
-                "Z" => current_score = 3 + 0,
+                "X" => current_score = 3 + 0,
+                "Y" => current_score = 1 + 3,
+                "Z" => current_score = 2 + 6,
                 _   => continue,
             }
             "B" => match next_move {
@@ -26,9 +26,9 @@ fn main() {
                 _   => continue,
             }
             "C" => match next_move {
-                "X" => current_score = 1 + 6,
-                "Y" => current_score = 2 + 0,
-                "Z" => current_score = 3 + 3,
+                "X" => current_score = 2 + 0,
+                "Y" => current_score = 3 + 3,
+                "Z" => current_score = 1 + 6,
                 _   => continue,
             }
             _ => println!("{expected_move}"),
