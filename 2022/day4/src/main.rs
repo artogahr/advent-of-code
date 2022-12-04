@@ -24,7 +24,7 @@ fn main() -> io::Result<()> {
         let lr = lr.parse::<i32>().unwrap();
         let rl = rl.parse::<i32>().unwrap();
         let rr = rr.parse::<i32>().unwrap();
-        if (ll <= rl && lr >= rr) || (rl <= ll && rr >= lr){
+        if ll <= rl || lr >= rr || rl <= ll || rr >= lr{
             answer += 1;
         }
     }
