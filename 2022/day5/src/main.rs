@@ -6,7 +6,7 @@ pub fn main() {
     let file = BufReader::new(file_handle);
 
     let mut stack_index;
-    let mut has_encountered_space = false;
+    let mut has_encountered_space = true;
     let mut space_continue_index = 0;
     let mut array: Vec<Vec<char>> = Vec::new();
 
@@ -51,21 +51,35 @@ pub fn main() {
             }
         }
     }
+     array.iter_mut().for_each(|it| {
+        it.reverse();
+     });
     let file_handle = File::open("input.txt").expect("Couldn't open file");
     let file = BufReader::new(file_handle);
-    'second_loop: for line in file.lines() {
+    for line in file.lines() {
         let words: Vec<String> = line.expect("Couldn't read any more lines")
             .split(' ').map(|s| s.to_string()).collect();
         if words[0] != "move" {
             continue;
         }
         else {
-            let move_count: i32 = words[1].parse().unwrap();
-            let from_stack: i32 = words[3].parse().unwrap();
-            let to_stack: i32   = words[5].parse().unwrap();
+            let move_count: usize = words[1].parse().unwrap();
+            let mut from_stack: usize = words[3].parse().unwrap();
+            let mut to_stack: usize   = words[5].parse().unwrap();
+            from_stack -= 1;
+            to_stack -= 1;
+            for _ in 1..=move_count {
+                let k = array[from_stack].pop();
+                match k {
+                    Some(ch) => array[to_stack].push(ch),
+                    None => {
+                        panic!();
+                    },
+                }
+            }
         }
     }
-    // array.iter().for_each(|it| {
-    //     println!("{:#?}", it);
-    // });
+     array.iter_mut().for_each(|it| {
+         print!("{0}", it.pop().unwrap());
+     });
 }
