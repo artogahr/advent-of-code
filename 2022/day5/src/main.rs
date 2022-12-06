@@ -2,7 +2,7 @@ use std::io::{BufRead, BufReader};
 use std::fs::File;
 
 pub fn main() {
-    let file_handle = File::open("l-input.txt").expect("Couldn't open file");
+    let file_handle = File::open("input.txt").expect("Couldn't open file");
     let file = BufReader::new(file_handle);
 
     let mut stack_index;
@@ -66,7 +66,6 @@ pub fn main() {
             let move_count: usize = words[1].parse().unwrap();
             let mut from_stack: usize = words[3].parse().unwrap();
             let mut to_stack: usize   = words[5].parse().unwrap();
-                        println!("{0} {1} {2}", move_count, from_stack, to_stack);
             from_stack -= 1;
             to_stack -= 1;
             let mut temp_vec: Vec<char> = Vec::new();
