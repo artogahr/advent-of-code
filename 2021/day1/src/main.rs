@@ -2,8 +2,8 @@ use std::io;
 
 fn main() {
     let mut numbers: Vec<i32> = vec![];
-    let mut currentIter = 1;
-    let mut previousIter = 0;
+    let mut current_iter = 1;
+    let mut previous_iter = 0;
     let mut count = 0;
     loop {
         let mut input_text = String::new();
@@ -26,18 +26,18 @@ fn main() {
         };
     }
     loop {
-        let currentIterSum =
-            numbers[currentIter] + numbers[currentIter + 1] + numbers[currentIter + 2];
-        let prevItemSum =
-            numbers[previousIter] + numbers[previousIter + 1] + numbers[previousIter + 2];
-        if currentIterSum > prevItemSum {
+        let current_iter_sum =
+            numbers[current_iter] + numbers[current_iter + 1] + numbers[current_iter + 2];
+        let prev_item_sum =
+            numbers[previous_iter] + numbers[previous_iter + 1] + numbers[previous_iter + 2];
+        if current_iter_sum > prev_item_sum {
             count += 1;
         }
-        if currentIter + 3 == numbers.len() {
+        if current_iter + 3 == numbers.len() {
             break;
         }
-        currentIter += 1;
-        previousIter += 1;
+        current_iter += 1;
+        previous_iter += 1;
     }
     println!("{}", count);
 }
