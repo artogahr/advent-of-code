@@ -1,8 +1,6 @@
 use std::io;
 
 fn main() {
-    println!("Hello,
-     world!");
     let mut currentNum = 0;
     let mut previousNum = 0;
     let mut counter = 0;
@@ -19,7 +17,6 @@ fn main() {
         match trimmed.parse::<u32>() {
             Ok(i) => currentNum = i,
             Err(..) => {
-                println!("fuck you");
                 break;
             },
         };
