@@ -61,7 +61,7 @@ fn part2(input: Vec<String>) -> u32 {
                         }
                         //println!("while removing: fs: {first_str_pos}, ls: {last_str_pos}");
                         //println!("removing from line {cur_line}");
-                        cur_line.replace_range(pos+1..pos + digit.len()-1, "");
+                        cur_line.replace_range(pos+1..pos+2, "");
                         //println!("after removing: {cur_line}");
                         removed_count += 1;
                     }
@@ -110,7 +110,7 @@ fn part2(input: Vec<String>) -> u32 {
             }
             (false, false) => {
                 let found_num =
-                    10 * nums_in_lines.first().unwrap_or(&0) + nums_in_lines.last().unwrap_or(&0);
+                    10 * nums_in_lines.first().unwrap() + nums_in_lines.last().unwrap();
                 println!("found num {found_num}");
                 sum += found_num as u32;
             }
