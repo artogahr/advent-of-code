@@ -91,28 +91,28 @@ fn part2(input: Vec<String>) -> u32 {
         );
         match (first_str_pos < first_num_pos, last_str_pos > last_num_pos) {
             (true, true) => {
-                let var_name = 10 * get_num_from_pos(&line, first_str_pos)
+                let found_num = 10 * get_num_from_pos(&line, first_str_pos)
                     + get_last_num_from_pos(&line, last_str_pos);
-                println!("found num {var_name}");
-                sum += var_name as u32;
+                println!("found num {found_num}");
+                sum += found_num as u32;
             }
             (false, true) => {
-                let var_name = 10 * nums_in_lines.first().unwrap()
+                let found_num = 10 * nums_in_lines.first().unwrap()
                     + get_last_num_from_pos(&line, last_str_pos) as u32;
-                println!("found num {var_name}");
-                sum += var_name as u32;
+                println!("found num {found_num}");
+                sum += found_num as u32;
             }
             (true, false) => {
-                let var_name = 10 * get_num_from_pos(&line, first_str_pos) as u32
+                let found_num = 10 * get_num_from_pos(&line, first_str_pos) as u32
                     + nums_in_lines.last().unwrap();
-                println!("found num {var_name}");
-                sum += var_name as u32;
+                println!("found num {found_num}");
+                sum += found_num as u32;
             }
             (false, false) => {
-                let var_name =
+                let found_num =
                     10 * nums_in_lines.first().unwrap_or(&0) + nums_in_lines.last().unwrap_or(&0);
-                println!("found num {var_name}");
-                sum += var_name as u32;
+                println!("found num {found_num}");
+                sum += found_num as u32;
             }
         }
     println!("");
