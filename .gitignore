@@ -15,4 +15,5 @@
 # vendor/
 # Generated files
 **/target/
+**/.vscode/
 
