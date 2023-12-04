@@ -74,8 +74,69 @@ fn part1(input: Vec<String>) -> u32 {
     sum
 }
 
-fn part2(_input: Vec<String>) -> i64 {
-    todo!();
+fn part2(input: Vec<String>) -> u32 {
+    //empty chars 2d array, 1 extra wall in each direction to avoid over/underflows
+    let mut chars: Vec<Vec<char>> = vec![vec!['.'; input[0].len() + 2]; input.len() + 2];
+    for (i, line) in input.iter().enumerate() {
+        for (j, ch) in line.chars().enumerate() {
+            chars[i + 1][j + 1] = ch;
+        }
+    }
+    let mut numbers: Vec<Number> = vec![];
+    let mut is_reading_num = false;
+    let mut current_num: u32 = 0;
+    for (i, line) in chars.iter().enumerate() {
+        for (j, ch) in line.iter().enumerate() {
+            match ch {
+                ('0'..='9') => {
+                    if is_reading_num {
+                        current_num *= 10;
+                        current_num += ch.to_digit(10).unwrap();
+                    } else {
+                        current_num = ch.to_digit(10).unwrap();
+                    }
+                    is_reading_num = true;
+                }
+                _ => {
+                    if is_reading_num {
+                        is_reading_num = false;
+                        numbers.push(Number {
+                            start_index: j - current_num.to_string().len(),
+                            end_index: j - 1,
+                            line_index: i,
+                            value: current_num,
+                        });
+                        //dbg!(&numbers);
+                    }
+                }
+            }
+        }
+    }
+    let mut sum =0;
+    for (i, line) in chars.iter().enumerate() {
+        for (j, ch) in line.iter().enumerate() {
+            let _gear_ratio = 0;
+            let mut first_num = 0;
+            let _second_nu = 0;
+            match ch {
+                '*' => {
+                    for number in &numbers {
+                        if number.line_index >= i-1 && number.line_index <= i+1 && number.end_index >= j-1 && number.start_index <= j+1 {
+                            if first_num == 0{
+                                first_num = number.value;
+                            }
+                            else {
+                                sum += first_num * number.value;
+                            }
+                        }
+                    }
+                }
+                _ => {
+                }
+            }
+        }
+    }
+    sum
 }
 
 fn main() {
