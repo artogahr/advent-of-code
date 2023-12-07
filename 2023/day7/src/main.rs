@@ -1,5 +1,15 @@
 use std::vec;
 
+enum HandType {
+    FiveOfAKind,
+    FourOfAKind,
+    FullHouse,
+    ThreeOfAKind,
+    TwoPair,
+    OnePair,
+    HighCard,
+}
+
 fn parse_input() -> Vec<String> {
     include_str!("input.txt")
         .lines()
@@ -20,9 +30,7 @@ fn parse_hands(lines: Vec<String>) -> Vec<Hand> {
     sort_hands(hands)
 }
 
-fn sort_hands(hands: Vec<Hand>) -> Vec<Hand> {
-    hands
-}
+fn sort_hands(hands: Vec<Hand>) -> Vec<Hand> {}
 
 #[derive(Debug)]
 struct Hand {
