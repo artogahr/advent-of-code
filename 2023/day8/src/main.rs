@@ -1,4 +1,4 @@
-use indexmap::{indexmap, IndexMap};
+use indexmap::{IndexMap};
 fn parse_input() -> Vec<String> {
     include_str!("input.txt")
         .lines()
@@ -62,7 +62,7 @@ fn part1(input: Vec<String>) -> i64 {
     i as i64 + 1
 }
 
-fn part2(input: Vec<String>) -> i64 {
+fn part2(_input: Vec<String>) -> i64 {
     todo!();
 }
 
