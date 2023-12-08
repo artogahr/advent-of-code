@@ -23,13 +23,14 @@ impl Ord for Hand {
         if type_ordering != Ordering::Equal {
             return type_ordering.reverse();
         }
-
+        //dbg!(self, other);
+        //println!("above two are same, checking based on cards");
         for (self_card, other_card) in self.cards.iter().zip(&other.cards) {
             let self_value = self_card.to_digit(10).unwrap_or_else(|| match self_card {
                 'A' => 14,
                 'K' => 13,
                 'Q' => 12,
-                'J' => 11,
+                'J' => 1,
                 'T' => 10,
                 _ => self_card.to_digit(10).unwrap(),
             });
@@ -38,7 +39,7 @@ impl Ord for Hand {
                 'A' => 14,
                 'K' => 13,
                 'Q' => 12,
-                'J' => 11,
+                'J' => 1,
                 'T' => 10,
                 _ => other_card.to_digit(10).unwrap(),
             });
@@ -56,13 +57,13 @@ impl Ord for Hand {
 impl Hand {
     fn hand_type(&self) -> HandType {
         let mut counts = [0; 13];
-
+        let mut j_count: i32 = 0;
         for &card in &self.cards {
             match card {
                 'A' => counts[0] += 1,
                 'K' => counts[1] += 1,
                 'Q' => counts[2] += 1,
-                'J' => counts[3] += 1,
+                'J' => j_count += 1,
                 'T' => counts[4] += 1,
                 '9' => counts[5] += 1,
                 '8' => counts[6] += 1,
@@ -77,8 +78,10 @@ impl Hand {
         }
 
         let num_unique_values = counts.iter().filter(|&&count| count > 0).count();
-        let max_count = *counts.iter().max().unwrap();
-
+        let max_count = *counts.iter().max().unwrap() + j_count;
+        if j_count == 5 {
+            return HandType::FiveOfAKind;
+        }
         match (num_unique_values, max_count) {
             (1, 5) => HandType::FiveOfAKind,
             (2, 4) => HandType::FourOfAKind,
@@ -113,7 +116,9 @@ fn parse_hands(lines: Vec<String>) -> Vec<Hand> {
 fn calculate_winnings(hands: &[Hand]) -> u32 {
     let mut total_winnings = 0;
     for (i, hand) in hands.iter().enumerate() {
-        total_winnings += (i as u32 + 1) * hand.bid;
+        let rank_sum = (i as u32 + 1) * hand.bid;
+        total_winnings += rank_sum;
+        //dbg!(&hand, &hand.hand_type(), i + 1, rank_sum, total_winnings);
     }
     total_winnings
 }
@@ -130,11 +135,15 @@ fn part1(input: Vec<String>) -> u32 {
 }
 
 fn part2(input: Vec<String>) -> u32 {
-    todo!();
+    let mut hands = parse_hands(input);
+    sort_hands(&mut hands);
+    let total_winnings = calculate_winnings(&hands);
+    total_winnings
 }
 
 fn main() {
     let solution = advent::new(parse_input).part(part1).part(part2).build();
+    println!("See git history for correct solution to part 1");
     solution.cli()
 }
 
@@ -175,6 +184,34 @@ fn test_hand_type() {
         bid: 987,
     };
     assert_eq!(hand.hand_type(), HandType::OnePair);
+    // Test case for J
+    let hand = Hand {
+        cards: vec!['T', '5', '5', 'J', '5'],
+        bid: 987,
+    };
+    assert_eq!(hand.hand_type(), HandType::FourOfAKind);
+    // Test case for J 2
+    let hand = Hand {
+        cards: vec!['J', '5', '5', 'J', '5'],
+        bid: 987,
+    };
+    assert_eq!(hand.hand_type(), HandType::FiveOfAKind);
+
+    let hand = Hand {
+        cards: vec!['3', '2', 'J', 'Q', 'K'],
+        bid: 987,
+    };
+    assert_eq!(hand.hand_type(), HandType::OnePair);
+    let hand = Hand {
+        cards: vec!['2', 'J', 'J', 'J', 'J'],
+        bid: 987,
+    };
+    assert_eq!(hand.hand_type(), HandType::FiveOfAKind);
+    let hand = Hand {
+        cards: vec!['J', 'J', 'J', 'J', 'J'],
+        bid: 987,
+    };
+    assert_eq!(hand.hand_type(), HandType::FiveOfAKind);
 }
 
 #[test]
