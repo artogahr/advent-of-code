@@ -187,17 +187,17 @@ fn part2(map: Vec<Vec<char>>) -> u32 {
     }
     let (mut prev_pos, mut current_pos) = find_next_pos(&map, first_pos, current_pos);
     let mut step_count = 0;
-    new_map[prev_pos.x][prev_pos.y] = '*';
-    new_map[current_pos.x][current_pos.y] = '*';
+    new_map[prev_pos.x][prev_pos.y] = '█';
+    new_map[current_pos.x][current_pos.y] = '█';
     loop {
         (prev_pos, current_pos) = find_next_pos(&map, prev_pos, current_pos);
         match map[current_pos.x][current_pos.y] {
             'S' => {
-                new_map[current_pos.x][current_pos.y] = '*';
+                new_map[current_pos.x][current_pos.y] = 'S';
                 break;
             }
             'F' | '7' | 'L' | 'J' | '|' => {
-                new_map[current_pos.x][current_pos.y] = '*';
+                new_map[current_pos.x][current_pos.y] = map[current_pos.x][current_pos.y];
                 continue;
             }
             '-' => {
@@ -209,18 +209,41 @@ fn part2(map: Vec<Vec<char>>) -> u32 {
             }
         }
     }
-    for (x, line) in map.iter().enumerate() {
-        for (y, ch) in line.iter().enumerate() {
-            print!("{ch}");
-        }
-        print!("\n");
-    }
     for (x, line) in new_map.iter().enumerate() {
         for (y, ch) in line.iter().enumerate() {
-            print!("{ch}");
+            match ch {
+                'L' => {
+                    print!("└");
+                }
+                'J' => {
+                    print!("┘");
+                }
+                'F' => {
+                    print!("┌");
+                }
+                '7' => {
+                    print!("┐");
+                }
+                '|' => {
+                    print!("│");
+                }
+                '-' => {
+                    print!("─");
+                }
+                'S' => {
+                    print!("█");
+                }
+                '█' => {
+                    print!("█");
+                }
+                _ => {
+                    print!("•");
+                }
+            }
         }
         print!("\n");
     }
+
     let mut num_inside: u32 = 0;
     for (x, line) in new_map.iter().enumerate() {
         for (y, ch) in line.iter().enumerate() {
