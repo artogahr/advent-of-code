@@ -1,6 +1,9 @@
-use std::{collections::HashMap, fs::read_to_string, u32};
+use std::{collections::HashMap, fs::read_to_string};
+
 fn main() {
     let lines = read_lines("input.txt");
+    // numbers and a list of numbers that
+    // must come before it
     let mut rules: HashMap<u32, Vec<u32>> = HashMap::new();
     let mut updates: Vec<Vec<u32>> = Vec::new();
     for line in lines {
@@ -43,7 +46,13 @@ fn part1(updates: &Vec<Vec<u32>>, rules: &HashMap<u32, Vec<u32>>) -> u32 {
 }
 
 fn part2(updates: &Vec<Vec<u32>>, rules: &HashMap<u32, Vec<u32>>) -> u32 {
-    todo!()
+    let mut sum = 0;
+    for numbers in updates {
+        if !is_sorted(&numbers, &rules) {
+            sum += sort_numbers(numbers.clone(), &rules)[numbers.len() / 2];
+        }
+    }
+    sum
 }
 
 fn is_sorted(numbers: &Vec<u32>, rules: &HashMap<u32, Vec<u32>>) -> bool {
@@ -59,8 +68,22 @@ fn is_sorted(numbers: &Vec<u32>, rules: &HashMap<u32, Vec<u32>>) -> bool {
     true
 }
 
-fn sort_numbers(numbers: &Vec<u32>, rules: &HashMap<u32, Vec<u32>>) -> Vec<u32> {
-    todo!()
+fn sort_numbers(mut numbers: Vec<u32>, rules: &HashMap<u32, Vec<u32>>) -> Vec<u32> {
+    while !is_sorted(&numbers, &rules) {
+        for i in 0..numbers.len() {
+            let num = numbers[i];
+            if let Some(numbers_that_must_come_before) = rules.get(&num) {
+                for j in i..numbers.len() {
+                    for number in numbers_that_must_come_before.iter() {
+                        if *number == numbers[j] {
+                            numbers.swap(i, j);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    numbers
 }
 
 fn read_lines(filename: &str) -> Vec<String> {
