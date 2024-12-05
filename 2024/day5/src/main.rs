@@ -1,14 +1,8 @@
 use std::{collections::HashMap, fs::read_to_string, u32};
 fn main() {
-    println!("Part 1: {}", part1());
-    println!("Part 2: {}", part2());
-}
-
-fn part1() -> u32 {
-    let mut sum = 0;
     let lines = read_lines("input.txt");
     let mut rules: HashMap<u32, Vec<u32>> = HashMap::new();
-
+    let mut updates: Vec<Vec<u32>> = Vec::new();
     for line in lines {
         if line.len() == 0 {
             continue;
@@ -31,25 +25,41 @@ fn part1() -> u32 {
                 .split(",")
                 .map(|num| num.parse::<u32>().unwrap())
                 .collect();
-            let mut is_valid = true;
-            for (i, num) in numbers.iter().enumerate() {
-                if let Some(num_comes_after) = rules.get(num) {
-                    for j in i..numbers.len() {
-                        if num_comes_after.iter().any(|num| num == &numbers[j]) {
-                            is_valid = false;
-                        }
-                    }
-                }
-            }
-            if is_valid {
-                sum += numbers[numbers.len() / 2];
-            }
+            updates.push(numbers);
+        }
+    }
+    println!("Part 1: {}", part1(&updates, &rules));
+    println!("Part 2: {}", part2(&updates, &rules));
+}
+
+fn part1(updates: &Vec<Vec<u32>>, rules: &HashMap<u32, Vec<u32>>) -> u32 {
+    let mut sum = 0;
+    for numbers in updates {
+        if is_sorted(&numbers, &rules) {
+            sum += numbers[numbers.len() / 2];
         }
     }
     sum
 }
 
-fn part2() -> u32 {
+fn part2(updates: &Vec<Vec<u32>>, rules: &HashMap<u32, Vec<u32>>) -> u32 {
+    todo!()
+}
+
+fn is_sorted(numbers: &Vec<u32>, rules: &HashMap<u32, Vec<u32>>) -> bool {
+    for (i, num) in numbers.iter().enumerate() {
+        if let Some(num_comes_after) = rules.get(num) {
+            for j in i..numbers.len() {
+                if num_comes_after.iter().any(|num| num == &numbers[j]) {
+                    return false;
+                }
+            }
+        }
+    }
+    true
+}
+
+fn sort_numbers(numbers: &Vec<u32>, rules: &HashMap<u32, Vec<u32>>) -> Vec<u32> {
     todo!()
 }
 
