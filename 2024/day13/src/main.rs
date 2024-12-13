@@ -2,68 +2,68 @@ use std::fs;
 
 #[derive(Debug)]
 struct Machine {
-    button_a: (usize, usize),
-    button_b: (usize, usize),
-
-    prize: (usize, usize),
+    button_a: (i64, i64),
+    button_b: (i64, i64),
+    prize: (i64, i64),
 }
 
 impl Machine {
     fn get_minimal_moves(&self) -> Option<(usize, usize)> {
-        let mut found_combinations: Vec<(usize, usize)> = Vec::new();
+        let (a1, a2) = self.button_a;
+        let (b1, b2) = self.button_b;
+        let (p1, p2) = self.prize;
 
-        for a in (0..100).rev() {
-            for b in 0..=100 {
-                /*  println!("({0} {1})*{2} + ({3} {4})*{5} = ({6} {7}), looking for ({8} {9})",
-                    self.button_a.0, self.button_a.1, a,
-                    self.button_b.0, self.button_b.0, b,
-                    self.button_a.0 * a , self.button_b.0 * b,
-                    self.prize.0, self.prize.1
-                );*/
+        // Solve for x and y such that a1 * x + b1 * y = p1 and a2 * x + b2 * y = p2
 
-                if self.button_a.0 * a + self.button_b.0 * b > self.prize.0
-                    || self.button_a.1 * a + self.button_b.1 * b > self.prize.1
-                {
-                    break;
-                }
-
-                if self.button_a.0 * a + self.button_b.0 * b == self.prize.0
-                    && self.button_a.1 * a + self.button_b.1 * b == self.prize.1
-                {
-                    //println!("Found {a} {b}");
-                    found_combinations.push((a, b));
-                }
+        if let Some((x, y)) = solve_diophantine(a1, b1, p1, a2, b2, p2) {
+            if x >= 0 && y >= 0 {
+                Some((x as usize, y as usize))
+            } else {
+                None
             }
-        }
-
-        //dbg!(&found_combinations);
-
-        let mut answer_index = 0;
-        let mut min_combination_answer = usize::MAX;
-
-        for i in 0..found_combinations.len() {
-            if found_combinations[i].0 * 3 + found_combinations[i].1 < min_combination_answer {
-                min_combination_answer = found_combinations[i].0 * 3 + found_combinations[i].1;
-                answer_index = i;
-            }
-        }
-
-        //dbg!(&found_combinations[answer_index]);
-
-        if found_combinations.len() > 0 {
-            Some(found_combinations[answer_index])
         } else {
             None
         }
     }
 
     fn get_minimal_ticket_to_win(&self) -> Option<usize> {
-        let minimal_moves = &self.get_minimal_moves();
-        match minimal_moves {
-            Some(moves) => Some(moves.0 * 3 + moves.1),
-            None => None,
-        }
+        self.get_minimal_moves()
+            .map(|(moves_a, moves_b)| moves_a * 3 + moves_b)
     }
+}
+
+fn extended_gcd(a: i64, b: i64) -> (i64, i64, i64) {
+    if a == 0 {
+        (b, 0, 1)
+    } else {
+        let (g, x, y) = extended_gcd(b % a, a);
+        (g, y - (b / a) * x, x)
+    }
+}
+
+fn solve_diophantine(a1: i64, b1: i64, p1: i64, a2: i64, b2: i64, p2: i64) -> Option<(i64, i64)> {
+    let det = a1 * b2 - a2 * b1;
+    if det == 0 {
+        return None;
+    }
+
+    let (gcd_a1_b1, _, _) = extended_gcd(a1, b1);
+    if p1 % gcd_a1_b1 != 0 {
+        return None;
+    }
+    let (gcd_a2_b2, _, _) = extended_gcd(a2, b2);
+    if p2 % gcd_a2_b2 != 0 {
+        return None;
+    }
+
+    let x = p1 * b2 - p2 * b1;
+    let y = p2 * a1 - p1 * a2;
+
+    if x % det != 0 || y % det != 0 {
+        return None;
+    }
+
+    Some((x / det, y / det))
 }
 
 fn main() {
@@ -72,6 +72,7 @@ fn main() {
     let machines = parse_machines(&input);
 
     println!("Part 1: {0}", part1(&machines));
+    println!("Part 2: {0}", part2(&machines));
 }
 
 fn parse_machines(input: &str) -> Vec<Machine> {
@@ -115,7 +116,7 @@ fn parse_machines(input: &str) -> Vec<Machine> {
     machines
 }
 
-fn parse_coordinates(input: &str) -> (usize, usize) {
+fn parse_coordinates(input: &str) -> (i64, i64) {
     let parts: Vec<&str> = input.split(",").collect();
 
     let x = parts[0]
@@ -142,8 +143,22 @@ fn part1(machines: &Vec<Machine>) -> usize {
         .sum()
 }
 
-#[cfg(test)]
+fn part2(machines: &Vec<Machine>) -> usize {
+    machines
+        .iter()
+        .map(|machine| Machine {
+            button_a: machine.button_a,
+            button_b: machine.button_b,
+            prize: (
+                machine.prize.0 + 10000000000000,
+                machine.prize.1 + 10000000000000,
+            ),
+        })
+        .filter_map(|machine| machine.get_minimal_ticket_to_win())
+        .sum()
+}
 
+#[cfg(test)]
 mod tests {
     use super::*;
 
@@ -168,6 +183,29 @@ mod tests {
             prize: (7870, 6450),
         };
         assert_eq!(machine.get_minimal_moves(), Some((38, 86)));
+        // button_a: (54, 99), button_b: (95, 17), prize: (13421, 11246)
+        let machine = Machine {
+            button_a: (54, 99),
+            button_b: (95, 17),
+            prize: (13421, 11246),
+        };
+        assert_eq!(machine.get_minimal_moves(), Some((99, 85)));
+        //Machine { button_a: (43, 84), button_b: (42, 25), prize: (6289, 8007) },
+        let machine = Machine {
+            button_a: (43, 84),
+            button_b: (42, 25),
+            prize: (6289, 8007),
+        };
+        assert_eq!(machine.get_minimal_moves(), Some((73, 75)));
+        let machine = Machine {
+            button_a: (49, 13),
+            button_b: (28, 57),
+            prize: (10000000004561, 10000000011243),
+        };
+        assert_eq!(
+            machine.get_minimal_moves(),
+            Some((119390695737, 148209139766))
+        );
     }
 
     #[test]
