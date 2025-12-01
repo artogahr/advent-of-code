@@ -10,7 +10,7 @@ impl Dial {
     }
     fn turn(&mut self, amount: i32) {
         self.arrow = (self.arrow as i32 + amount).rem_euclid(100) as u32;
-        println!("The dial is rotated {} to point at {}", amount, self.arrow);
+        // println!("The dial is rotated {} to point at {}", amount, self.arrow);
     }
 }
 
@@ -27,10 +27,23 @@ fn main() {
         let (dir, amount) = line.split_at(1);
         let amount: i32 = amount.parse().unwrap();
         let sign = if dir == "L" { -1 } else { 1 };
-        dial.turn(sign * amount);
-        if dial.arrow == 0 {
+        let amount = amount * sign;
+        // println!("Arrow is at {} Will rotate {amount} clicks", dial.arrow);
+        let full_rotations = amount / 100;
+        // println!("Will do {} full rotations", full_rotations);
+        count += full_rotations.abs();
+        let remainder = amount - 100 * full_rotations;
+        if dial.arrow as i32 + remainder >= 100
+            || (dial.arrow as i32 + remainder <= 0 && dial.arrow != 0)
+        {
+            // println!(
+            //     "Remainder is {remainder} and dial is currently at {}\nWill do one more pass through 0",
+            //     dial.arrow
+            // );
             count += 1;
         }
+        dial.turn(amount);
+        // println!("count is at {count}\n");
     }
     println!("{0}", count);
 }
