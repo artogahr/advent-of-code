@@ -16,4 +16,7 @@
 # Generated files
 **/target/
 **/.vscode/
-
+**/bin/
+**/result/
+**/.direnv/
+result
